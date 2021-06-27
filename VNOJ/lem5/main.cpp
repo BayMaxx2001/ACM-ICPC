@@ -9,7 +9,7 @@
 #define sqr(x) ((x) * (x))
 #define INF 9999999999
 #define MOD 1000000007
-#define maxn 2000005
+#define maxn 100005
 
 #define ull unsigned long long
 #define uld unsigned long double
@@ -47,10 +47,49 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 #define BayMaxx ""
 #define ONLINE_JUDGE
 
-
+int n,b[maxn],order[maxn];
+int c[maxn];
+int F[maxn][200];
+pii a[maxn];
+bool cmp(pii a,pii b)
+{
+    return a.fi<b.fi;
+}
+int pos(int x, int d, int y)
+{
+    int id = lower_bound(b+1,b+1+n,x)-b;
+    if ( a[order[id]].fi+d == y )
+        return order[id];
+    return -1;
+}
 void solve()
 {
+    cin >> n;
+    for(int i=1;i<=n;i++)
+    {
+        cin >> a[i].fi;
+        a[i].se = i;
+        c[i]=a[i].fi;
+    }
+    sort (a+1,a+1+n);
+    for(int i=1;i<=n;i++) b[i]=a[i].fi,order[i]=a[i].se;
+    for(int i=1;i<=n;i++) a[i].fi=c[i];
 
+    int ans = 0;
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=200;j++)
+        {
+            int z = pos(a[i].fi-j,j,a[i].fi);
+            if ( z != -1 && z <= i)
+            {
+                F[i][j] = max(F[i][j], F[z][j]+1);
+//                cout << a[z].fi << " " << j << " " << a[i].fi << endl;
+            }
+            ans = max(ans, F[i][j]);
+        }
+    }
+    cout << ans+1;
 }
 int main()
 {

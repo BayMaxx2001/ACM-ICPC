@@ -9,7 +9,7 @@
 #define sqr(x) ((x) * (x))
 #define INF 9999999999
 #define MOD 1000000007
-#define maxn 2000005
+#define maxn 10005
 
 #define ull unsigned long long
 #define uld unsigned long double
@@ -46,11 +46,35 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 // --I/O
 #define BayMaxx ""
 #define ONLINE_JUDGE
-
-
+int F[maxn][5005],n;
+pii a[maxn];
 void solve()
 {
-
+    cin >> n;
+    for(int i=1;i<=n;i++)
+    {
+        cin >> a[i].fi >> a[i].se;
+    }
+    for( int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=i;j++)
+        {
+            F[i][j]=MOD;
+        }
+    }
+    F[1][1] = a[1].se;
+    for( int i=1;i<=n;i++)
+    {
+        int mid = min(i,n/2);
+        F[i][0] = F[i-1][1] + a[i].fi;
+		F[i][mid] = F[i-1][mid-1] + a[i].se;
+        for(int j=1;j<mid;j++)
+        {
+            F[i][j]=min(F[i][j],F[i-1][j-1]+a[i].se);
+            F[i][j]=min(F[i][j],F[i-1][j+1]+a[i].fi);
+        }
+    }
+    cout << F[n][0];
 }
 int main()
 {

@@ -46,28 +46,60 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 // --I/O
 #define BayMaxx ""
 #define ONLINE_JUDGE
-
-
-void solve()
+int n , m ;
+int a[maxn] ;
+int b[maxn] ;
+void nhap()
 {
+    //cin >> n ;
+    scanf("%d" , &n ) ;
+    for ( int i = 1 ; i <= n ; ++i)
+        {
+            scanf("%d" , &a[i] ) ;
+            //cin >> a[i] ;
+            b[i] = a[i] ;
+        }
+    sort ( b + 1 , b + 1 + n ) ;
+    for ( long i = 1 ; i <= n ; ++i )
+        a[i] = lower_bound( b + 1 , b + 1 + n , a[i] ) - b ;
 
 }
+int T[maxn] , F[maxn];
+void Update( int x , int val )
+{
+    while ( x <= n )
+    {
+        T[x] = max ( T[x] , val )  ;
+        x += ( x & (-x) ) ;
+    }
+}
+int Get_max ( int x )
+{
+    int  S = 0 ;
+    while ( x  > 0 )
+    {
+        S = max ( T[x] , S ) ;
+        x -= ( x & (-x) ) ;
+    }
+    return S ;
+}
+
 int main()
 {
     ios_base::sync_with_stdio(0) ; cin.tie(NULL) ; cout.tie(NULL) ;
-    #ifndef ONLINE_JUDGE
-        freopen("input.txt", "r", stdin);
-        freopen("output.txt", "w", stdout);
-    #endif
-
-    int tc = 1;
-    // cin >> tc;
-    for (int t = 1; t <= tc; t++) {
-        // cout << "Case #" << t  << ": ";
-        solve();
+    //freopen( ZED".inp" , "r" , stdin ) ;
+    //freopen( ZED".out" , "w" , stdout ) ;
+    nhap() ;
+    int kq = 0 ;
+    for ( int i = 1 ; i <= n ; ++i )
+    {
+        F[i] = Get_max(a[i] - 1) + 1 ;
+        Update(a[i] , F[i] ) ;
+        kq = max ( kq , F[i] ) ;
     }
+    printf("%d" , kq ) ;
+
     return 0;
 }
-
 
 

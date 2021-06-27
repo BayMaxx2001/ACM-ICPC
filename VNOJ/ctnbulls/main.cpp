@@ -8,7 +8,7 @@
 #define btcount(x) __builtin_popcount(x)
 #define sqr(x) ((x) * (x))
 #define INF 9999999999
-#define MOD 1000000007
+#define MOD 2111992
 #define maxn 2000005
 
 #define ull unsigned long long
@@ -47,10 +47,20 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 #define BayMaxx ""
 #define ONLINE_JUDGE
 
-
+int F[maxn];
+int n, k;
 void solve()
 {
-
+    cin >> n >> k;
+    for(int i=1;i<=k+1;i++)
+    {
+        F[i]=(i+1)%MOD;
+    }
+    for( int i=k+2;i<=n;i++)
+    {
+        F[i] = (F[i-k-1] + F[i-1])%MOD;
+    }
+    cout << F[n]%MOD;
 }
 int main()
 {
