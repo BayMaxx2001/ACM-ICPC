@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1631121530 source:d:\acm-icpc\contest\8-9-2021\checkb\main.cpp
+	<stdio.h>
+	<vector>
+	<queue>
+

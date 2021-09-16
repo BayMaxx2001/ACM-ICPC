@@ -50,6 +50,12 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 
 void solve()
 {
+    int F[10];
+    F[0]=2;
+    F[1]=3;
+    for(int i=2;i<=3;i++)
+        F[i]=F[i-1]*F[i-1]+F[i-2];
+    cout << F[3];
 
 }
 int main()
