@@ -9,7 +9,7 @@
 #define sqr(x) ((x) * (x))
 #define INF 9999999999
 #define MOD 1000000007
-#define maxn 2000005
+#define maxn 100111
 
 #define ull unsigned long long
 #define uld unsigned long double
@@ -26,7 +26,7 @@ typedef pair <int, int> pii;
 typedef pair <ll, ll> pll;
 
 //---DEBUG
-//#define DB
+#define DB
 #ifdef DB
 #define el cerr << "\n";
     #define db(...) cerr << " [" << #__VA_ARGS__ << " : " << __VA_ARGS__ << "] ";
@@ -47,89 +47,55 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 #define BayMaxx ""
 #define ONLINE_JUDGE
 #define int long long
-ll n,m,A,B;
-vector < pll > a[maxn];
-ll d[maxn];
-ll half = 0;
-void dijsktra(ll s )
+ll h, p;
+ll mu[52];
+void Init()
 {
-    priority_queue<pll>hmin;
-    for ( int i=0;i<=n;i++) d[i] = MOD;
-    d[s]=0;
-    hmin.push(mp(d[s],s));
-    while(hmin.size())
+     mu[0]=1;
+    for(int i=1;i<=50;i++)
     {
-        int u = hmin.top().se;
-        int dist = -hmin.top().fi;
-        hmin.pop();
-        for(auto &ke : a[u])
-        {
-            int v = ke.fi;
-            int w = ke.se;
-            if ( d[v] > dist + w)
-            {
-                d[v]=dist+w;
-                hmin.push ( mp(-d[v] , v ));
-            }
-        }
+        mu[i]=mu[i-1]*2ll;
     }
 }
-map<pii,int> M;
-void solve()
-{
-    cin >> n >> m >> A >> B;
-    half = B/2;
-    for ( int i=1;i<=m;i++)
+void solve(){
+    cin >> h >> p ;
+    ll n = mu[h]-1;
+    ll use = 0;
+    int dem = 0;
+    for(int i=0;i<h;i++)
     {
-        int u, v , w;
-        cin >> u >> v >> w;
-        a[u].PB(mp(v,w));
-        a[v].PB(mp(u,w));
-    }
-    dijsktra(0);
-    for(int i=1;i<=n;i++)
-    {
-        db(d[i]) ;
-    }
-
-    int ans = 0;
-    for(int i=0;i<=n;i++)
-    {
-        for( int j = 0; j <a[i].size();j ++)
+        if(mu[i]<=p)
         {
-            int u = i;
-            int v = a[i][j].fi;
-            int w = a[i][j].se;
-            db(u);
-            db(v);
-            db(d[u]);
-            db(w);
-            pii street = {u,v};
-            pii street2 = {v,u};
-            if ( d[u] <= half )
-            {
-                if ( M[street] == 0 || M[street2] == 0 )
-                {
-                    ans ++;
-                    M[street] = 1;
-                    M[street2] =1;
-                }
-            }
+            dem++;
+            use += mu[i];
+        }
+        else break;
+    }
+    ll unuse = n - use;
+    if ( unuse > 0 )
+    {
+        if(unuse % p == 0)
+        {
+            cout << dem + unuse/p << endl;
+        }
+        else
+        {
+            cout << dem + unuse/p + 1<< endl;
         }
     }
-    cout << ans ;
-
+    else
+        cout << dem << endl;
 }
-main()
+ main()
 {
     ios_base::sync_with_stdio(0) ; cin.tie(NULL) ; cout.tie(NULL) ;
     #ifndef ONLINE_JUDGE
         freopen("input.txt", "r", stdin);
         freopen("output.txt", "w", stdout);
     #endif
-
+    Init();
     int tc = 1;
-    // cin >> tc;
+    cin >> tc;
     for (int t = 1; t <= tc; t++) {
         // cout << "Case #" << t  << ": ";
         solve();

@@ -9,7 +9,7 @@
 #define sqr(x) ((x) * (x))
 #define INF 9999999999
 #define MOD 1000000007
-#define maxn 2000005
+#define maxn 100111
 
 #define ull unsigned long long
 #define uld unsigned long double
@@ -26,7 +26,7 @@ typedef pair <int, int> pii;
 typedef pair <ll, ll> pll;
 
 //---DEBUG
-//#define DB
+#define DB
 #ifdef DB
 #define el cerr << "\n";
     #define db(...) cerr << " [" << #__VA_ARGS__ << " : " << __VA_ARGS__ << "] ";
@@ -47,80 +47,48 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 #define BayMaxx ""
 #define ONLINE_JUDGE
 #define int long long
-ll n,m,A,B;
-vector < pll > a[maxn];
-ll d[maxn];
-ll half = 0;
-void dijsktra(ll s )
-{
-    priority_queue<pll>hmin;
-    for ( int i=0;i<=n;i++) d[i] = MOD;
-    d[s]=0;
-    hmin.push(mp(d[s],s));
-    while(hmin.size())
-    {
-        int u = hmin.top().se;
-        int dist = -hmin.top().fi;
-        hmin.pop();
-        for(auto &ke : a[u])
-        {
-            int v = ke.fi;
-            int w = ke.se;
-            if ( d[v] > dist + w)
-            {
-                d[v]=dist+w;
-                hmin.push ( mp(-d[v] , v ));
-            }
-        }
-    }
-}
-map<pii,int> M;
-void solve()
-{
-    cin >> n >> m >> A >> B;
-    half = B/2;
-    for ( int i=1;i<=m;i++)
-    {
-        int u, v , w;
-        cin >> u >> v >> w;
-        a[u].PB(mp(v,w));
-        a[v].PB(mp(u,w));
-    }
-    dijsktra(0);
+int n;
+int a[maxn];
+map<int,int> M;
+map<int,int> bo;
+vector<int> ans;
+void solve(){
+    cin >> n;
     for(int i=1;i<=n;i++)
     {
-        db(d[i]) ;
+        cin >> a[i];
     }
-
-    int ans = 0;
-    for(int i=0;i<=n;i++)
+    int cnt = 0;
+    for(int i=1;i<=n;i++)
     {
-        for( int j = 0; j <a[i].size();j ++)
+        if ( a[i] == 0 ) cnt ++;
+        if ( a[i] > 0 ) M[a[i]]++;
+        if (a[i]<0)
         {
-            int u = i;
-            int v = a[i][j].fi;
-            int w = a[i][j].se;
-            db(u);
-            db(v);
-            db(d[u]);
-            db(w);
-            pii street = {u,v};
-            pii street2 = {v,u};
-            if ( d[u] <= half )
+            if( M[-a[i]] > 0 )
             {
-                if ( M[street] == 0 || M[street2] == 0 )
-                {
-                    ans ++;
-                    M[street] = 1;
-                    M[street2] =1;
-                }
+                M[-a[i]] --;
+                continue;
+            }
+            else if ( cnt > 0 )
+            {
+                cnt -- ;
+                ans.PB(-a[i]);
+            }
+            else if (M[-a[i]] == 0 && cnt == 0)
+            {
+                cout <<"NO" << endl;
+                return ;
             }
         }
     }
-    cout << ans ;
-
+    while ( cnt -- ) ans.PB(1);
+    cout << "YES" << endl;
+    for(int i=0;i<ans.size();i++)
+        cout << ans[i] << " ";
 }
-main()
+
+ main()
 {
     ios_base::sync_with_stdio(0) ; cin.tie(NULL) ; cout.tie(NULL) ;
     #ifndef ONLINE_JUDGE

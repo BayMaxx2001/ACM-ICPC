@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1639255261 source:d:\acm-icpc\contest\mienbac\e\main.cpp
+	<stdio.h>
+	<algorithm>
+

@@ -9,7 +9,7 @@
 #define sqr(x) ((x) * (x))
 #define INF 9999999999
 #define MOD 1000000007
-#define maxn 2000005
+#define maxn 100111
 
 #define ull unsigned long long
 #define uld unsigned long double
@@ -46,81 +46,77 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 // --I/O
 #define BayMaxx ""
 #define ONLINE_JUDGE
-#define int long long
-ll n,m,A,B;
-vector < pll > a[maxn];
-ll d[maxn];
-ll half = 0;
-void dijsktra(ll s )
-{
-    priority_queue<pll>hmin;
-    for ( int i=0;i<=n;i++) d[i] = MOD;
-    d[s]=0;
-    hmin.push(mp(d[s],s));
-    while(hmin.size())
+string s;
+// -1  (
+// -2  )
+// -3  ->
+vector<int> a;
+stack<int> Stack ;
+void solve(){
+    cin >> s ;
+    for(int i=0;i<s.size();i++)
     {
-        int u = hmin.top().se;
-        int dist = -hmin.top().fi;
-        hmin.pop();
-        for(auto &ke : a[u])
-        {
-            int v = ke.fi;
-            int w = ke.se;
-            if ( d[v] > dist + w)
-            {
-                d[v]=dist+w;
-                hmin.push ( mp(-d[v] , v ));
-            }
-        }
-    }
-}
-map<pii,int> M;
-void solve()
-{
-    cin >> n >> m >> A >> B;
-    half = B/2;
-    for ( int i=1;i<=m;i++)
-    {
-        int u, v , w;
-        cin >> u >> v >> w;
-        a[u].PB(mp(v,w));
-        a[v].PB(mp(u,w));
-    }
-    dijsktra(0);
-    for(int i=1;i<=n;i++)
-    {
-        db(d[i]) ;
+        if(s[i] == '(') a.PB(-1);
+        if(s[i] == ')') a.PB(-2);
+        if(s[i] == '-') a.PB(-3);
     }
 
-    int ans = 0;
-    for(int i=0;i<=n;i++)
+    for(int i = a.size() - 1 ; i >= 0 ; i -- )
     {
-        for( int j = 0; j <a[i].size();j ++)
+        // truong hop gap dong ')' hoac ->
+        if ( a[i] == -2 || a[i] == -3 )
         {
-            int u = i;
-            int v = a[i][j].fi;
-            int w = a[i][j].se;
-            db(u);
-            db(v);
-            db(d[u]);
-            db(w);
-            pii street = {u,v};
-            pii street2 = {v,u};
-            if ( d[u] <= half )
+            Stack.push(a[i]);
+            db(a[i])
+            continue;
+        }
+        // truong hop gap mo '('
+        if ( a[i] == -1 )
+        {
+            db(Stack.top());
+            // cai dang sau ')'
+            if ( Stack.top() == -2)
             {
-                if ( M[street] == 0 || M[street2] == 0 )
+                Stack.pop();
+                Stack.push(0);
+            }
+            else if ( Stack.top() >= 0 )
+            {
+                int cur = Stack.top();
+                db(cur);
+                Stack.pop();
+                Stack.pop();
+                Stack.push(cur);
+            }
+        }
+
+
+        if ( Stack.top() >= 0 )
+        {
+            db(Stack.top());
+            db(Stack.size());
+            int cur = Stack.top();
+            Stack.pop();
+            if ( Stack.size())
+            {
+                if ( Stack.top() == -3 ) // neu la keo theo
                 {
-                    ans ++;
-                    M[street] = 1;
-                    M[street2] =1;
+                    Stack.pop();
+                    int se = Stack.top();
+                    Stack.pop();
+                    db(cur);
+                    db(se);
+                    int maxx = max(cur + 1, se);
+                    Stack.push(maxx);
+                    continue;
                 }
             }
+            Stack.push(cur);
         }
     }
-    cout << ans ;
-
+    cout << Stack.top();
 }
-main()
+int main()
 {
     ios_base::sync_with_stdio(0) ; cin.tie(NULL) ; cout.tie(NULL) ;
     #ifndef ONLINE_JUDGE

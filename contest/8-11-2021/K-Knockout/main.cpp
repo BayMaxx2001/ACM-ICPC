@@ -26,7 +26,7 @@ typedef pair <int, int> pii;
 typedef pair <ll, ll> pll;
 
 //---DEBUG
-//#define DB
+#define DB
 #ifdef DB
 #define el cerr << "\n";
     #define db(...) cerr << " [" << #__VA_ARGS__ << " : " << __VA_ARGS__ << "] ";
@@ -46,81 +46,54 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 // --I/O
 #define BayMaxx ""
 #define ONLINE_JUDGE
-#define int long long
-ll n,m,A,B;
-vector < pll > a[maxn];
-ll d[maxn];
-ll half = 0;
-void dijsktra(ll s )
+
+int n, l, k;
+int length;
+string s;
+string save[maxn];
+void read()
 {
-    priority_queue<pll>hmin;
-    for ( int i=0;i<=n;i++) d[i] = MOD;
-    d[s]=0;
-    hmin.push(mp(d[s],s));
-    while(hmin.size())
+    cin >> n >> l >> k ;
+    cin >> s;
+    length = s.size();
+    sort(s.begin(),s.end());
+    for( int i=1;i<=n;i++)save[i]="";
+    k -- ;
+
+    int id = 0;
+    int st = 0;
+    char cur = s[0];
+
+    while ( save[k].size() < l )
     {
-        int u = hmin.top().se;
-        int dist = -hmin.top().fi;
-        hmin.pop();
-        for(auto &ke : a[u])
+        for(int i=st;i<=k;i++)
         {
-            int v = ke.fi;
-            int w = ke.se;
-            if ( d[v] > dist + w)
-            {
-                d[v]=dist+w;
-                hmin.push ( mp(-d[v] , v ));
+            save[i] = save[i] + s[id];
+            if ( cur != s[id] ){
+                cur = s[id];
+                st = i;
             }
+            id ++ ;
         }
     }
+    for( int i=0;i<n;i++)
+	{
+		while(save[i].size() < l)
+		{
+			save[i] += s[id];
+			id++;
+		}
+	}
+    for(int i=0;i<n;i++)
+        cout << save[i] << endl;
+
 }
-map<pii,int> M;
+
 void solve()
 {
-    cin >> n >> m >> A >> B;
-    half = B/2;
-    for ( int i=1;i<=m;i++)
-    {
-        int u, v , w;
-        cin >> u >> v >> w;
-        a[u].PB(mp(v,w));
-        a[v].PB(mp(u,w));
-    }
-    dijsktra(0);
-    for(int i=1;i<=n;i++)
-    {
-        db(d[i]) ;
-    }
-
-    int ans = 0;
-    for(int i=0;i<=n;i++)
-    {
-        for( int j = 0; j <a[i].size();j ++)
-        {
-            int u = i;
-            int v = a[i][j].fi;
-            int w = a[i][j].se;
-            db(u);
-            db(v);
-            db(d[u]);
-            db(w);
-            pii street = {u,v};
-            pii street2 = {v,u};
-            if ( d[u] <= half )
-            {
-                if ( M[street] == 0 || M[street2] == 0 )
-                {
-                    ans ++;
-                    M[street] = 1;
-                    M[street2] =1;
-                }
-            }
-        }
-    }
-    cout << ans ;
-
+    read();
 }
-main()
+int main()
 {
     ios_base::sync_with_stdio(0) ; cin.tie(NULL) ; cout.tie(NULL) ;
     #ifndef ONLINE_JUDGE
@@ -136,6 +109,3 @@ main()
     }
     return 0;
 }
-
-
-

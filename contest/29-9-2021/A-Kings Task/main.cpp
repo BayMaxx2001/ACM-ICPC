@@ -26,7 +26,7 @@ typedef pair <int, int> pii;
 typedef pair <ll, ll> pll;
 
 //---DEBUG
-//#define DB
+#define DB
 #ifdef DB
 #define el cerr << "\n";
     #define db(...) cerr << " [" << #__VA_ARGS__ << " : " << __VA_ARGS__ << "] ";
@@ -46,81 +46,94 @@ template<class T> T LCM(T a, T b) { return a / GCD(a, b) * b; }
 // --I/O
 #define BayMaxx ""
 #define ONLINE_JUDGE
-#define int long long
-ll n,m,A,B;
-vector < pll > a[maxn];
-ll d[maxn];
-ll half = 0;
-void dijsktra(ll s )
+int n;
+int a[maxn], origin[maxn];
+
+int check( int a[])
 {
-    priority_queue<pll>hmin;
-    for ( int i=0;i<=n;i++) d[i] = MOD;
-    d[s]=0;
-    hmin.push(mp(d[s],s));
-    while(hmin.size())
-    {
-        int u = hmin.top().se;
-        int dist = -hmin.top().fi;
-        hmin.pop();
-        for(auto &ke : a[u])
-        {
-            int v = ke.fi;
-            int w = ke.se;
-            if ( d[v] > dist + w)
-            {
-                d[v]=dist+w;
-                hmin.push ( mp(-d[v] , v ));
-            }
-        }
-    }
-}
-map<pii,int> M;
-void solve()
-{
-    cin >> n >> m >> A >> B;
-    half = B/2;
-    for ( int i=1;i<=m;i++)
-    {
-        int u, v , w;
-        cin >> u >> v >> w;
-        a[u].PB(mp(v,w));
-        a[v].PB(mp(u,w));
-    }
-    dijsktra(0);
+    int oke = 0;
     for(int i=1;i<=n;i++)
     {
-        db(d[i]) ;
-    }
-
-    int ans = 0;
-    for(int i=0;i<=n;i++)
-    {
-        for( int j = 0; j <a[i].size();j ++)
+        if (a[i] != origin[i])
         {
-            int u = i;
-            int v = a[i][j].fi;
-            int w = a[i][j].se;
-            db(u);
-            db(v);
-            db(d[u]);
-            db(w);
-            pii street = {u,v};
-            pii street2 = {v,u};
-            if ( d[u] <= half )
-            {
-                if ( M[street] == 0 || M[street2] == 0 )
-                {
-                    ans ++;
-                    M[street] = 1;
-                    M[street2] =1;
-                }
-            }
+            oke = 1;
+            break;
         }
     }
-    cout << ans ;
-
+    if ( oke == 0 ) return -1;
+    for(int i=1;i<=n;i++)
+    {
+        if ( a[i]-a[i-1] != 1 )
+            return 0;
+    }
+    return 1;
+    for(int i=1;i<=n;i++)
+        cout << a[i] << " ";
 }
-main()
+int calc(int cur)
+{
+    int k = n*3;
+    int count = 0;
+    bool oke = 0;
+    for(int i=1;i<=n;i++)
+    {
+        if ( a[i]-a[i-1] != 1 )
+        {
+            oke = 1;
+            break;
+        }
+    }
+    if ( oke == 0 )
+        return 0;
+    while (k -- )
+    {
+        cur = 1-cur;
+        count ++;
+        if ( cur == 1 )
+        {
+            for(int i=1;i<=n;i+=2)
+            {
+                swap(a[i],a[i+1]);
+            }
+            int res = check(a);
+            if ( res == 1 )
+            {
+                return count ;
+            }
+            if ( res == -1)
+                return -1;
+        }
+        if ( cur == 0 )
+        {
+            for(int i=1;i<=n/2;i++)
+            {
+                swap(a[i],a[n/2+i]);
+            }
+            int res = check(a);
+            if ( res == 1 )
+            {
+                return count ;
+            }
+            if ( res == -1)
+                return -1;
+        }
+    }
+}
+void solve()
+{
+    cin >> n;
+    n = n * 2;
+    for(int i=1;i<=n;i++) cin >> a[i];
+    for(int i=1;i<=n;i++) origin[i] = a[i];
+    int ans1 = calc(1);
+    for(int i=1;i<=n;i++) a[i] = origin[i];
+    int ans2 = calc(0);
+    if ( ans1 == -1 || ans2 == -1)
+        cout <<  max(ans1, ans2);
+    else
+        cout << min(ans1,ans2);
+}
+int main()
 {
     ios_base::sync_with_stdio(0) ; cin.tie(NULL) ; cout.tie(NULL) ;
     #ifndef ONLINE_JUDGE
@@ -136,6 +149,3 @@ main()
     }
     return 0;
 }
-
-
-
